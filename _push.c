@@ -1,54 +1,42 @@
 #include "monty.h"
-
 /**
- * new_Node - Create new node.
- * @n: Is a value.
- * Return: New node.
+ * _push - push int to a stack
+ * @stack: linked lists for monty stack
+ * @line_number: number of line opcode occurs on
  */
-
-stack_t *new_Node(int n)
+void _push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *node = NULL;
+	stack_t *new;
+	char *arg;
+	int push_arg;
 
-	node = malloc(sizeof(stack_t));
-	if (node == NULL)
+	push_arg = 0;
+	new = malloc(sizeof(stack_t));
+	if (!new)
 	{
-		fprintf(stderr, "Error: malloc failed\n");
-		exit(EXIT_FAILURE);
+		printf("Error: malloc failed\n");
+		error_exit(stack);
 	}
-	node->n = n;
-	node->next = NULL;
-	node->prev = NULL;
 
-	return (node);
-}
-
-/**
- * _push - This function pushes an element to the stack.
- * @stack: Double pointer to the head of the Stack.
- * @line_num: Number of the line.
- * Return: Nothing.
- */
-
-void _push(stack_t **stack, unsigned int line_num)
-{
-	char *value = strtok(NULL, DELIMITERS);
-	stack_t *new_node;
-
-	if (!stack)
+	arg = strtok(NULL, "\n ");
+	if (isnumber(arg) == 1 && arg != NULL)
 	{
-	fprintf(stderr, "L%d: Need to use line_num\n", line_num);
-	exit(EXIT_FAILURE);
+		push_arg = atoi(arg);
 	}
-	new_node = malloc(sizeof(stack_t));
-	if (!new_node)
+	else
 	{
-		exit(EXIT_FAILURE);
+		printf("L%d: usage: push integer\n", line_number);
+		error_exit(stack);
 	}
-	new_node = new_Node(atoi(value));
-	new_node->next = (*stack);
-	new_node->prev = NULL;
-	if (*stack)
-		(*stack)->prev = new_node;
-	*stack = new_node;
+
+	if (sq_flag == 1)
+	{
+		add_dnodeint_end(stack, push_arg);
+	}
+
+	if (sq_flag == 0)
+	{
+		add_dnodeint(stack, push_arg);
+	}
+
 }
