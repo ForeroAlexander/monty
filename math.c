@@ -7,13 +7,26 @@
  */
 void _add(stack_t **stack, unsigned int line_number)
 {
+	stack_t *tmp, *del;
+
+	(void)line_number;
 	if (*stack == NULL || (*stack)->next == NULL)
 	{
-		printf("L%d: can't add, stack too short\n", line_number);
-		error_exit(stack);
+		dprintf(STDERR_FILENO,"L%d: can't add, stack too short\n", gbl.line_number);
+
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code);
+		exit(EXIT_FAILURE);
 	}
-	(*stack)->next->n += (*stack)->n;
-	_pop(stack, line_number);
+	tmp = *stack;
+	tmp = tmp->next;
+	tmp->n += (*stack)->n;
+	tmp->prev = NULL;
+	del = *stack;
+	*stack = tmp;
+	free(del);
 }
 
 /**
@@ -41,13 +54,16 @@ void _sub(stack_t **stack, unsigned int line_number)
  */
 void _mul(stack_t **stack, unsigned int line_number)
 {
+	stack_t *tmp,*del;
+
+	(void)line_number;
 	if (*stack == NULL || (*stack)->next == NULL)
 	{
-		printf("L%d: can't mul, stack too short\n", line_number);
-		error_exit(stack);
+		dprintf("L%d: can't mul, stack too short\n", gbl.line_number);
+		exit(EXIT_FAILURE);
 	}
-	(*stack)->next->n *= (*stack)->n;
-	_pop(stack, line_number);
+
+
 }
 
 /**
@@ -57,18 +73,30 @@ void _mul(stack_t **stack, unsigned int line_number)
  */
 void _div(stack_t **stack, unsigned int line_number)
 {
+	stack_t *tmp,*del;
+	(void)line_number;
 	if (*stack == NULL || (*stack)->next == NULL)
 	{
-		printf("L%d: can't div, stack too short\n", line_number);
-		error_exit(stack);
+		dprintf("L%d: can't div, stack too short\n", gbl.line_number);
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code)
+		exit(EXIT_FAILURE);
 	}
 	if ((*stack)->n == 0)
 	{
-		printf("L%d: division by zero\n", line_number);
-		error_exit(stack);
+		dprintf(STDERR_FILENO, "L%d: division by zero\n", line_number);
+		exit(EXIT_FAILURE);
 	}
-	(*stack)->next->n /= (*stack)->n;
-	_pop(stack, line_number);
+	
+	tmp = *stack;
+	tmp = tmp->next;
+	tmp->n /= (*stack)->n;
+	tmp->prev = NULL;
+	del = *stack;
+	*stack = tmp;
+	free(del);
 }
 
 /**
@@ -79,16 +107,29 @@ void _div(stack_t **stack, unsigned int line_number)
  */
 void _mod(stack_t **stack, unsigned int line_number)
 {
+	stack_t *tmp,*del;
+
+	(void)line_number;
 	if (*stack == NULL || (*stack)->next == NULL)
 	{
-		printf("L%d: can't mod, stack too short\n", line_number);
-		error_exit(stack);
+		dprintf("L%d: can't mod, stack too short\n", gbl.line_number);
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code)
+		exit(EXIT_FAILURE);
 	}
 	if ((*stack)->n == 0)
 	{
-		printf("L%d: division by zero\n", line_number);
-		error_exit(stack);
+		dprintf(STDERR_FILENO, "L%d: division by zero\n", line_number);
+		exit(EXIT_FAILURE);
 	}
-	(*stack)->next->n %= (*stack)->n;
-	_pop(stack, line_number);
+	
+	tmp = *stack;
+	tmp = tmp->next;
+	tmp->n /= (*stack)->n;
+	tmp->prev = NULL;
+	del = *stack;
+	*stack = tmp;
+	free(del);
 }
