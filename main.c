@@ -13,8 +13,8 @@ int main(int ac, char **av)
 	stack = NULL;
 	if (ac != 2)
 	{
-		printf("USAGE: monty file\n");
-		error_exit(&stack);
+		dprintf(STDERR_FILENO, "USAGE: monty file\n");
+		exit(&stack);
 	}
 	read_file(av[1], &stack);
 	free_dlistint(stack);
