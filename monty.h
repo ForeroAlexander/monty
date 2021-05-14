@@ -32,25 +32,25 @@ typedef struct instruction_s
 	char *opcode;
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
-extern void _push(stack_t **stack, unsigned int line_number);
-extern void _pall(stack_t **stack, unsigned int line_number);
-extern void _pint(stack_t **stack, unsigned int line_number);
-extern void _pop(stack_t **stack, unsigned int line_number);
-extern void _swap(stack_t **stack, unsigned int line_number);
-extern void _add(stack_t **stack, unsigned int line_number);
-extern void _nop(stack_t **stack, unsigned int line_number);
-extern void _sub(stack_t **stack, unsigned int line_number);
-extern void _div(stack_t **stack, unsigned int line_number);
-extern void _mul(stack_t **stack, unsigned int line_number);
-extern void _mod(stack_t **stack, unsigned int line_number);
-extern void _pchar(stack_t **stack, unsigned int line_number);
-extern void _pstr(stack_t **stack, unsigned int line_number);
-extern void _rotl(stack_t **stack, unsigned int line_number);
-extern void _rotr(stack_t **stack, unsigned int line_number);
+extern void push(stack_t **stack, unsigned int line_number);
+extern void pall(stack_t **stack, unsigned int line_number);
+extern void pint(stack_t **stack, unsigned int line_number);
+extern void pop(stack_t **stack, unsigned int line_number);
+extern void swap(stack_t **stack, unsigned int line_number);
+extern void add(stack_t **stack, unsigned int line_number);
+extern void nop(stack_t **stack, unsigned int line_number);
+extern void sub(stack_t **stack, unsigned int line_number);
+extern void division(stack_t **stack, unsigned int line_number);
+extern void mul(stack_t **stack, unsigned int line_number);
+extern void mod(stack_t **stack, unsigned int line_number);
+extern void pchar(stack_t **stack, unsigned int line_number);
+extern void pstr(stack_t **stack, unsigned int line_number);
+extern void rotl(stack_t **stack, unsigned int line_number);
+extern void rotr(stack_t **stack, unsigned int line_number);
 int is_a_num(char *n);
 void free_dlistint(stack_t *head);
 char **get_div_line(char *line);
-void monty_func(stack_t **stack);
+void exe_function(stack_t **stack);
 
 /**
  * struct gbl_s - struct to save extern variables
