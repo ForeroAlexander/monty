@@ -1,14 +1,9 @@
 #ifndef MONTY_H
 #define MONTY_H
-
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <ctype.h>
-
-extern int sq_flag;
-/*--- Struct Definitions ---*/
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
@@ -25,7 +20,7 @@ typedef struct stack_s
 	struct stack_s *next;
 } stack_t;
 /**
- * struct instruction_s - opcoode and its function
+ * struct instruction_s - opcode and its function
  * @opcode: the opcode
  * @f: function to handle the opcode
  *
@@ -37,33 +32,50 @@ typedef struct instruction_s
 	char *opcode;
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
-
-typedef void (*instruct_func)(stack_t **stack, unsigned int line_number);
-char *parse_line(char *line);
-instruct_func get_op_func(char *str);
-void read_file(char *filename, stack_t **stack);
-void _pall(stack_t **stack, unsigned int line_number);
-void _swap(stack_t **stack, unsigned int line_number);
-void _nop(stack_t **stack, unsigned int line_number);
-void _pchar(stack_t **stack, unsigned int line_number);
-void _pint(stack_t **stack, unsigned int line_number);
-void _push(stack_t **stack, unsigned int line_number);
-void _pop(stack_t **stack, unsigned int line_number);
-void _add(stack_t **stack, unsigned int line_number);
-void _sub(stack_t **stack, unsigned int line_number);
-void _mul(stack_t **stack, unsigned int line_number);
-void _div(stack_t **stack, unsigned int line_number);
-void _pstr(stack_t **stack, unsigned int line_number);
-void _mod(stack_t **stack, unsigned int line_number);
-void _rotl(stack_t **stack, unsigned int line_number);
-void _rotr(stack_t **stack, unsigned int line_number);
-void _queue(stack_t **stack, unsigned int line_number);
-void _stack(stack_t **stack, unsigned int line_number);
-stack_t *add_dnodeint_end(stack_t **head, const int n);
-stack_t *add_dnodeint(stack_t **head, const int n);
+extern void _push(stack_t **stack, unsigned int line_number);
+extern void _pall(stack_t **stack, unsigned int line_number);
+extern void _pint(stack_t **stack, unsigned int line_number);
+extern void _pop(stack_t **stack, unsigned int line_number);
+extern void _swap(stack_t **stack, unsigned int line_number);
+extern void _add(stack_t **stack, unsigned int line_number);
+extern void _nop(stack_t **stack, unsigned int line_number);
+extern void _sub(stack_t **stack, unsigned int line_number);
+extern void _division(stack_t **stack, unsigned int line_number);
+extern void _mul(stack_t **stack, unsigned int line_number);
+extern void _mod(stack_t **stack, unsigned int line_number);
+extern void _pchar(stack_t **stack, unsigned int line_number);
+extern void _pstr(stack_t **stack, unsigned int line_number);
+extern void _rotl(stack_t **stack, unsigned int line_number);
+extern void _rotr(stack_t **stack, unsigned int line_number);
+int is_a_num(char *n);
 void free_dlistint(stack_t *head);
-int delete_dnodeint_at_index(stack_t **head, unsigned int index);
-void error_exit(stack_t **stack);
-int isnumber(char *str);
+char **get_div_line(char *line);
+void monty_func(stack_t **stack);
+
+/**
+ * struct gbl_s - struct to save extern variables
+ * @num: integer to the push function
+ * @bt_code: file descriptor
+ * @div_line: tokenized file line
+ * @line: line to tokenize
+ * @line_number: line number to the error
+ * @mode: mode stack or queue
+ * Description: is used to free before exit and push an int
+ */
+typedef struct gbl_s
+{
+	char *num;
+	FILE *bt_code;
+	char **div_line;
+	char *line;
+	unsigned int line_number;
+	int mode;
+} gbl_t;
+
+#ifdef GLOBALS
+gbl_t gbl;
+#else
+extern gbl_t gbl;
+#endif
 
 #endif

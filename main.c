@@ -24,7 +24,7 @@ void select_instruction(void)
 			continue;
 		}
 		gbl.num = gbl.div_line[1];
-		exe_function(&stack);
+		monty_func(&stack);
 		if (strcmp(gbl.div_line[0], "stack") == 0)
 			gbl.mode = 1;
 		else if (strcmp(gbl.div_line[0], "queue") == 0)
@@ -46,13 +46,13 @@ int main(int ac, char **av)
 		if (ac != 2)
 		{
 			dprintf(STDERR_FILENO, "USAGE: monty file\n");
-			exit(EXIT_FAILURE);
+			error_exit(EXIT_FAILURE);
 		}
 		gbl.bt_code = fopen(av[1], "r");
 		if (gbl-bt_code == NULL)
 		{
 			dprintf(STDERR_FILENO, "Error: can't open file %s\n", av[1]);
-			exit(EXIT_FAILURE);
+			error_exit(EXIT_FAILURE);
 		}
 		select_instruction();
 		fclose(gbl.bt_code)

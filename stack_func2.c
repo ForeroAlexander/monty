@@ -7,13 +7,16 @@
  */
 void _pall(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
 {
-	stack_t *runner;
+	stack_t *current;
 
-	runner = *stack;
-	while (runner != NULL)
+	current = *stack;
+
+	(void)line_number;
+
+	while (current != NULL)
 	{
-		printf("%d\n", runner->n);
-		runner = runner->next;
+		printf("%d\n", current->n);
+		current = current->next;
 	}
 }
 
@@ -24,38 +27,46 @@ void _pall(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
  */
 void _push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *new;
-	char *arg;
-	int push_arg;
+	stack_t *new, *current;
 
-	push_arg = 0;
+	if (gbl.num == NULL || is_a_num(gbl.num) == 0)
+	{
+		dprintf(STDERR_FILENO,
+			"L%d: usage: push integer\n", line_number);
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code);
+		exit(EXIT_FAILURE); }
 	new = malloc(sizeof(stack_t));
-	if (!new)
+	if (new == NULL)
 	{
-		printf("Error: malloc failed\n");
-		error_exit(stack);
-	}
-
-	arg = strtok(NULL, "\n ");
-	if (isnumber(arg) == 1 && arg != NULL)
+		dprintf(STDERR_FILENO, "Error: malloc failed\n");
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code);
+		exit(EXIT_FAILURE); }
+	new->n = atoi(gbl.num);
+	if (*stack == NULL)
 	{
-		push_arg = atoi(arg);
-	}
-	else
+		new->prev = NULL;
+		new->next = NULL;
+		*stack = new; }
+	else if (gbl.mode == 1)
 	{
-		printf("L%d: usage: push integer\n", line_number);
-		error_exit(stack);
-	}
-
-	if (sq_flag == 1)
+		(*stack)->prev = new;
+		new->prev = NULL;
+		new->next = *stack;
+		*stack = new; }
+	else if (gbl.mode == 0)
 	{
-		add_dnodeint_end(stack, push_arg);
-	}
-
-	if (sq_flag == 0)
-	{
-		add_dnodeint(stack, push_arg);
-	}
+		current = *stack;
+		while (current->next != NULL)
+			current = current->next;
+		new->next = NULL;
+		new->prev = current;
+		current->next = new; }
 
 }
 
@@ -67,15 +78,19 @@ void _push(stack_t **stack, unsigned int line_number)
  */
 void _pint(stack_t **stack, unsigned int line_number)
 {
-	stack_t *runner;
+	(void)line_number;
 
-	runner = *stack;
-	if (runner == NULL)
+	if (*stack == NULL)
 	{
-		printf("L%d: can't pint, stack empty\n", line_number);
-		error_exit(stack);
+		dprintf(STDERR_FILENO,
+			"L%d: can't pint, stack empty\n", gbl.line_number);
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code);
+		exit(EXIT_FAILURE);
 	}
-	printf("%d\n", runner->n);
+	printf("%d\n", (*stack)->n);
 }
 
 /**
@@ -86,18 +101,30 @@ void _pint(stack_t **stack, unsigned int line_number)
  */
 void _swap(stack_t **stack, unsigned int line_number)
 {
-	stack_t *runner;
-	int tmp;
+	stack_t *tmp;
 
-	runner = *stack;
-	if (runner == NULL || runner->next == NULL)
+	(void)line_number;
+	if (*stack == NULL || (*stack)->next == NULL)
 	{
-		printf("L%d: can't swap, stack too short\n", line_number);
-		error_exit(stack);
+		dprintf(STDERR_FILENO,
+			"L%d: can't swap, stack too short\n", gbl.line_number);
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code);
+		exit(EXIT_FAILURE);
 	}
-	tmp = runner->n;
-	runner->n = runner->next->n;
-	runner->next->n = tmp;
+
+	tmp = (*stack)->next;
+	(*stack)->prev = tmp;
+	(*stack)->next = tmp->next;
+	tmp->prev = NULL;
+
+	if (tmp->next)
+		(tmp->next)->prev = *stack;
+
+	tmp->next = *stack;
+	*stack = tmp;
 }
 
 /**
@@ -107,10 +134,28 @@ void _swap(stack_t **stack, unsigned int line_number)
  */
 void _pop(stack_t **stack, unsigned int line_number)
 {
-	if (*stack == NULL)
+	stack_t *temp, *nw_stack;
+
+	(void)line_number;
+
+	if (*stack == NULL || stack == NULL)
 	{
-		printf("L%d: can't pop an empty stack\n", line_number);
-		error_exit(stack);
+		dprintf(STDERR_FILENO,
+			"L%d: can't pop an empty stack\n", gbl.line_number);
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code);
+		exit(EXIT_FAILURE);
 	}
-	delete_dnodeint_at_index(stack, 0);
+	temp = *stack;
+	if (temp->next == NULL)
+		*stack = NULL;
+	else
+	{
+		nw_stack = temp->next;
+		nw_stack->prev = NULL;
+		*stack = nw_stack;
+	}
+	free(temp);
 }

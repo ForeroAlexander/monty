@@ -1,15 +1,17 @@
 #include "monty.h"
+
 /**
- * _nop - literally does nothing
- * @stack: pointer to the top of the stack
- * @line_number: the index of the current line
- *
+ * nop - function that doesn't do anything
+ * @stack: top of the stack
+ * @line_number: # of the line in the .m file
  */
-void _nop(__attribute__ ((unused))stack_t **stack,
-	  __attribute__ ((unused))unsigned int line_number)
+
+void nop(stack_t **stack, unsigned int line_number)
 {
-	;
+	(void)stack;
+	(void)line_number;
 }
+
 /**
  * _pchar - prints the ASCII value of a number
  * @stack: pointer to the top of the stack
@@ -18,26 +20,34 @@ void _nop(__attribute__ ((unused))stack_t **stack,
  */
 void _pchar(stack_t **stack, unsigned int line_number)
 {
-	stack_t *runner;
-	int val;
+	char c;
 
+	(void)line_number;
 	if (*stack == NULL)
 	{
-		printf("L%d: can't pchar, stack empty\n", line_number);
-		error_exit(stack);
+		dprintf(STDERR_FILENO,
+			"L%d: can't pchar, stack empty\n", gbl.line_number);
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code);
+		exit(EXIT_FAILURE);
 	}
 
-	runner = *stack;
-	val = runner->n;
+	c = (*stack)->n;
 
-	if (!isprint(val))
+	if ((*stack)->n > 127 || (*stack)->n < 0)
 	{
-		printf("L%d: can't pchar, value out of range\n", line_number);
-		error_exit(stack);
+		dprintf(STDERR_FILENO,
+			"L%d: can't pchar, value out of range\n", gbl.line_number);
+		free_dlistint(*stack);
+		free(gbl.line);
+		free(gbl.div_line);
+		fclose(gbl.bt_code);
+		exit(EXIT_FAILURE);
 	}
 
-	putchar(val);
-	putchar('\n');
+	printf("%c\n", c);
 }
 /**
  * _pstr - print string starting a top of stack
@@ -46,42 +56,23 @@ void _pchar(stack_t **stack, unsigned int line_number)
  */
 void _pstr(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
 {
-	stack_t *runner;
-	int val;
-
-	runner = *stack;
-
-	while (runner != NULL)
+	stack_t *current;
+	char c;
+	(void)line_number;
+	current = *stack;
+	if (current == NULL)
 	{
-		val = runner->n;
-		if (val == 0)
-			break;
-		if (!isprint(val))
-		{
-			break;
-		}
-		putchar(val);
-		runner = runner->next;
+		printf("\n");
+		return;
 	}
-	putchar('\n');
+	while (current->n > 0 && current->n <= 127)
+	{
+		c = current->n;
+		printf("%c", c);
+		if (current->next == NULL)
+			break;
+		current = current->next;
+	}
+	printf("\n");
 }
-/**
- * _stack - sets sq_flag to stack
- * @stack: pointer to stack list
- * @line_number: line opcode occurs on
- */
-void _stack(__attribute__ ((unused)) stack_t **stack,
-	    __attribute__ ((unused)) unsigned int line_number)
-{
-	sq_flag = 0;
-}
-/**
- * _queue - sets sq_flag to queue
- * @stack: pointer to stack list
- * @line_number: line opcode occurs on
- */
-void _queue(__attribute__ ((unused))stack_t **stack,
-	    __attribute__ ((unused))unsigned int line_number)
-{
-	sq_flag = 1;
-}
+

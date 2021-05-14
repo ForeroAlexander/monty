@@ -12,96 +12,79 @@ void error_exit(stack_t **stack)
 }
 
 /**
- * isnumber - checks if a string is a number
- * @str: string being passed
- *
- * Return: returns 1 if string is a number, 0 otherwise
+ * _rotl - function that rotates the stack to the top.
+ * @stack: top of the stack
+ * @line_number: # of the line in the .m file
  */
-int isnumber(char *str)
+void _rotl(stack_t **stack, unsigned int line_number)
 {
-	unsigned int i;
+	stack_t *aux, *current, *new;
+	int nw_n;
 
-	if (str == NULL)
-		return (0);
-	i = 0;
-	while (str[i])
+	(void)line_number;
+	if (*stack != NULL && (*stack)->next != NULL)
 	{
-		if (str[0] == '-')
+		new = malloc(sizeof(stack_t));
+		if (new == NULL)
 		{
-			i++;
-			continue;
+			dprintf(STDERR_FILENO, "Error: malloc failed\n");
+			free_dlistint(*stack);
+			free(gbl.line);
+			free(gbl.div_line);
+			fclose(gbl.bt_code);
+			exit(EXIT_FAILURE);
 		}
-		if (!isdigit(str[i]))
-			return (0);
-		i++;
+		aux = *stack;
+		nw_n = aux->n;
+		current = aux->next;
+		current->prev = NULL;
+		*stack = current;
+		free(aux);
+		new->n = nw_n;
+		new->next = NULL;
+		while (current->next != NULL)
+		{
+		current = current->next;
+		}
+		current->next = new;
+		new->prev = current;
 	}
-	return (1);
 }
 
 /**
- * _rotl - rotates the list left
- * @stack: pointer to the top of the stack
- * @line_number: the index of the current line
- *
+ * _rotr - function that rotates the stack to the bottom.
+ * @stack: top of the stack
+ * @line_number: # of the line in the .m file
  */
-void _rotl(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
+void _rotr(stack_t **stack, unsigned int line_number)
 {
-	stack_t *runner;
-	int temp1, temp2;
+	stack_t *aux, *new;
+	int nw_n;
 
-	if (*stack == NULL)
-		return;
-	runner = *stack;
-	while (runner->next)
-		runner = runner->next;
-	while (runner)
+	(void)line_number;
+	if (*stack != NULL && (*stack)->next != NULL)
 	{
-		if (!runner->next)
+		new = malloc(sizeof(stack_t));
+		if (new == NULL)
 		{
-			temp1 = runner->n;
-			runner->n = (*stack)->n;
+			dprintf(STDERR_FILENO, "Error: malloc failed\n");
+			free_dlistint(*stack);
+			free(gbl.line);
+			free(gbl.div_line);
+			fclose(gbl.bt_code);
+			exit(EXIT_FAILURE);
 		}
-		else
-		{
-			temp2 = runner->n;
-			runner->n = temp1;
-			temp1 = temp2;
-		}
-		runner = runner->prev;
-	}
-}
-/**
- * _rotr - rotates the list right
- * @stack: pointer to the top of the stack
- * @line_number: the index of the current line
- *
- */
-void _rotr(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
-{
-	stack_t *runner1, *runner2;
-	int temp1, temp2;
+		aux = *stack;
+		while (aux->next)
+			aux = aux->next;
+		nw_n = aux->n;
+		(aux->prev)->next = NULL;
+		free(aux);
 
-	if (*stack == NULL)
-		return;
-
-	runner1 = *stack;
-	runner2 = *stack;
-	while (runner1->next)
-		runner1 = runner1->next;
-	while (runner2)
-	{
-		if (runner2->prev == NULL)
-		{
-			temp1 = runner2->n;
-			runner2->n = runner1->n;
-		}
-		else
-		{
-			temp2 = runner2->n;
-			runner2->n = temp1;
-			temp1 = temp2;
-		}
-		runner2 = runner2->next;
-
+		new->n = nw_n;
+		(*stack)->prev = new;
+		new->prev = NULL;
+		new->next = *stack;
+		*stack = new;
 	}
 }
