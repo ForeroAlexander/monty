@@ -27,15 +27,15 @@ instruct_func get_op_func(char *str)
 		{"pstr", _pstr},
 		{"stack", _stack},
 		{"queue", _queue},
-		{NULL, NULL},
-	};
+		{NULL, NULL}};
 
 	int flag = 1, i = 0, c;
+
 	while (selector[i].opcode != NULL)
 	{
 		if (gbl.div_line[0][0 == '#'])
 		{
-			nop(stack, gbl.line_number);
+			_nop(stack, gbl.line_number);
 			flag = 0;
 			break;
 		}
@@ -50,11 +50,11 @@ instruct_func get_op_func(char *str)
 	}
 	if (flag)
 	{
-		dprintf(STDERR_FILENO, "L%d: can't div, stack too short\n", gbl.line_number, gbl.div_line[0]);
+		dprintf(STDERR_FILENO, "L%u: unknown instruction %s\n", gbl.line_number, gbl.div_line[0]);
 		free_dlistint(*stack);
 		free(gbl.line);
 		free(gbl.div_line);
 		fclose(gbl.bt_code)
-		error_exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 }

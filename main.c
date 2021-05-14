@@ -46,13 +46,13 @@ int main(int ac, char **av)
 		if (ac != 2)
 		{
 			dprintf(STDERR_FILENO, "USAGE: monty file\n");
-			error_exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 		gbl.bt_code = fopen(av[1], "r");
 		if (gbl-bt_code == NULL)
 		{
 			dprintf(STDERR_FILENO, "Error: can't open file %s\n", av[1]);
-			error_exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE);
 		}
 		select_instruction();
 		fclose(gbl.bt_code)

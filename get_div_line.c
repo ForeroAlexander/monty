@@ -2,9 +2,9 @@
 #include "monty.h"
 
 /**
- * 
- * 
- * 
+ * get_div_line - functions that tokenize the line
+ * @line: is a character
+ * Return: arrays of strings
  */
 char **get_div_line(char *line)
 {

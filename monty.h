@@ -40,7 +40,7 @@ extern void _swap(stack_t **stack, unsigned int line_number);
 extern void _add(stack_t **stack, unsigned int line_number);
 extern void _nop(stack_t **stack, unsigned int line_number);
 extern void _sub(stack_t **stack, unsigned int line_number);
-extern void _division(stack_t **stack, unsigned int line_number);
+extern void _div(stack_t **stack, unsigned int line_number);
 extern void _mul(stack_t **stack, unsigned int line_number);
 extern void _mod(stack_t **stack, unsigned int line_number);
 extern void _pchar(stack_t **stack, unsigned int line_number);
